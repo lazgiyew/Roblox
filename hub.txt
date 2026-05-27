@@ -229,7 +229,7 @@ local echgui = {
 --Properties:
 
 echgui.echgui.Name = "echgui"
-echgui.echgui.Parent = game:GetService("CoreGui")
+echgui.echgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 echgui.echgui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 echgui.echframe.Name = "echframe"
@@ -1626,44 +1626,48 @@ echgui.ImageLabel_17.ImageTransparency = 0.600
 
 -- Scripts:
 
-local function makeDraggable(dragButton, mainFrame)
-    local dragging = false
-    local dragInput, dragStart, startPos
+local function CQGIXDX_fake_script() -- echgui.echgui.drgabble 
+	local script = Instance.new('LocalScript', echgui.echgui)
 
-    local function update(input)
-        local delta = input.Position - dragStart
-        -- TweenService kullanarak daha akıcı bir hareket sağlıyoruz
-        TweenService:Create(mainFrame, TweenInfo.new(0.15), {
-            Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        }):Play()
-    end
-
-    dragButton.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = mainFrame.Position
-
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-
-    dragButton.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            dragInput = input
-        end
-    end)
-
-    UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            update(input)
-        end
-    end)
-end
+	local UserInputService = game:GetService("UserInputService")
+	local TweenService = game:GetService("TweenService")
+	
+	-- Sürükləmə funksiyasını yaradırıq
+	local function makeDraggable(dragButton, mainFrame)
+		local dragging = false
+		local dragStart, startPos
+	
+		dragButton.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				dragging = true
+				dragStart = input.Position
+				startPos = mainFrame.Position
+	
+				-- Barmağı/Siçanı buraxanda dayansın
+				local connection
+				connection = UserInputService.InputEnded:Connect(function(inputEnd)
+					if inputEnd.UserInputType == Enum.UserInputType.MouseButton1 or inputEnd.UserInputType == Enum.UserInputType.Touch then
+						dragging = false
+						connection:Disconnect()
+					end
+				end)
+			end
+		end)
+	
+		UserInputService.InputChanged:Connect(function(input)
+			if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+				local delta = input.Position - dragStart
+				local newPos = UDim2.new(
+					startPos.X.Scale, 
+					startPos.X.Offset + delta.X, 
+					startPos.Y.Scale, 
+					startPos.Y.Offset + delta.Y
+				)
+	
+				TweenService:Create(mainFrame, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = newPos}):Play()
+			end
+		end)
+	end
 	
 	-- İNDİ BUTONLARI TƏYİN EDİRİK (Bura diqqət!)
 	
@@ -1680,8 +1684,8 @@ end
 	local button2 = frame2:WaitForChild("tabsframe"):WaitForChild("dragbutton")
 	makeDraggable(button2, frame2)
 end
-coroutine.wrap(UGZP_fake_script)()
-local function ZIBHXW_fake_script() -- echgui.echframe.animationsscript 
+coroutine.wrap(CQGIXDX_fake_script)()
+local function FIJXS_fake_script() -- echgui.echframe.animationsscript 
 	local script = Instance.new('LocalScript', echgui.echframe)
 
 	--[[
@@ -2633,8 +2637,8 @@ local function ZIBHXW_fake_script() -- echgui.echframe.animationsscript
 	-- BAŞLAT
 	setup()
 end
-coroutine.wrap(ZIBHXW_fake_script)()
-local function YBHAZ_fake_script() -- echgui.echframe.tabsystem 
+coroutine.wrap(FIJXS_fake_script)()
+local function YNDII_fake_script() -- echgui.echframe.tabsystem 
 	local script = Instance.new('LocalScript', echgui.echframe)
 
 	-- SERVICES
@@ -2687,8 +2691,8 @@ local function YBHAZ_fake_script() -- echgui.echframe.tabsystem
 	for _, tab in pairs(tabs) do tab.Visible = false end
 	tabs[tabsFrame.Animationsbutton].Visible = true
 end
-coroutine.wrap(YBHAZ_fake_script)()
-local function MQPPDB_fake_script() -- echgui.echframe.emotescript 
+coroutine.wrap(YNDII_fake_script)()
+local function QUUFDG_fake_script() -- echgui.echframe.emotescript 
 	local script = Instance.new('LocalScript', echgui.echframe)
 
 	--[[ 
@@ -3031,8 +3035,8 @@ local function MQPPDB_fake_script() -- echgui.echframe.emotescript
 	
 	init()
 end
-coroutine.wrap(MQPPDB_fake_script)()
-local function ICSGAA_fake_script() -- echgui.echframe.settingscript 
+coroutine.wrap(QUUFDG_fake_script)()
+local function TJXFIK_fake_script() -- echgui.echframe.settingscript 
 	local script = Instance.new('LocalScript', echgui.echframe)
 
 	--[[
@@ -3204,8 +3208,8 @@ local function ICSGAA_fake_script() -- echgui.echframe.settingscript
 	
 	print("[Echelon] Control Panel Script yükləndi ✓")
 end
-coroutine.wrap(ICSGAA_fake_script)()
-local function GMPBRJ_fake_script() -- echgui.echframe.effetcs 
+coroutine.wrap(TJXFIK_fake_script)()
+local function VANN_fake_script() -- echgui.echframe.effetcs 
 	local script = Instance.new('LocalScript', echgui.echframe)
 
 	-- SERVICES
@@ -3505,8 +3509,8 @@ local function GMPBRJ_fake_script() -- echgui.echframe.effetcs
 	gui.Visible = true
 	draggableFrame.Visible = false
 end
-coroutine.wrap(GMPBRJ_fake_script)()
-local function IGITJJR_fake_script() -- echgui.settingsframe.LocalScript 
+coroutine.wrap(VANN_fake_script)()
+local function XRRAYX_fake_script() -- echgui.settingsframe.LocalScript 
 	local script = Instance.new('LocalScript', echgui.settingsframe)
 
 	local frame = script.Parent
@@ -3547,8 +3551,8 @@ local function IGITJJR_fake_script() -- echgui.settingsframe.LocalScript
 		zLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
 	end)
 end
-coroutine.wrap(IGITJJR_fake_script)()
-local function FHDZYCK_fake_script() -- echgui.z.LocalScript 
+coroutine.wrap(XRRAYX_fake_script)()
+local function JZQKFJG_fake_script() -- echgui.z.LocalScript 
 	local script = Instance.new('LocalScript', echgui.z)
 
 	local textLabel = script.Parent
@@ -3563,8 +3567,8 @@ local function FHDZYCK_fake_script() -- echgui.z.LocalScript
 		textLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
 	end)
 end
-coroutine.wrap(FHDZYCK_fake_script)()
-local function SUMUTM_fake_script() -- echgui.tab4frame.LocalScript 
+coroutine.wrap(JZQKFJG_fake_script)()
+local function GCCTU_fake_script() -- echgui.tab4frame.LocalScript 
 	local script = Instance.new('LocalScript', echgui.tab4frame)
 
 	--[[
@@ -4443,8 +4447,8 @@ local function SUMUTM_fake_script() -- echgui.tab4frame.LocalScript
 	print("💡 İstifadə: Hər dropdown-dan ayrı-ayrı animasiya seç")
 	print("📋 Alt-alta düzgün sıralanan düymələr ilə!")
 end
-coroutine.wrap(SUMUTM_fake_script)()
-local function LUFF_fake_script() -- echgui.draggableframe.LocalScript 
+coroutine.wrap(GCCTU_fake_script)()
+local function HYTNL_fake_script() -- echgui.draggableframe.LocalScript 
 	local script = Instance.new('LocalScript', echgui.draggableframe)
 
 	local frame = script.Parent
@@ -4463,4 +4467,4 @@ local function LUFF_fake_script() -- echgui.draggableframe.LocalScript
 	end)
 	
 end
-coroutine.wrap(LUFF_fake_script)()
+coroutine.wrap(HYTNL_fake_script)()
