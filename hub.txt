@@ -1626,48 +1626,44 @@ echgui.ImageLabel_17.ImageTransparency = 0.600
 
 -- Scripts:
 
-local function UGZP_fake_script() -- echgui.echgui.drgabble 
-	local script = Instance.new('LocalScript', echgui.echgui)
+local function makeDraggable(dragButton, mainFrame)
+    local dragging = false
+    local dragInput, dragStart, startPos
 
-	local UserInputService = game:GetService("UserInputService")
-	local TweenService = game:GetService("TweenService")
-	
-	-- Sürükləmə funksiyasını yaradırıq
-	local function makeDraggable(dragButton, mainFrame)
-		local dragging = false
-		local dragStart, startPos
-	
-		dragButton.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-				dragging = true
-				dragStart = input.Position
-				startPos = mainFrame.Position
-	
-				-- Barmağı/Siçanı buraxanda dayansın
-				local connection
-				connection = UserInputService.InputEnded:Connect(function(inputEnd)
-					if inputEnd.UserInputType == Enum.UserInputType.MouseButton1 or inputEnd.UserInputType == Enum.UserInputType.Touch then
-						dragging = false
-						connection:Disconnect()
-					end
-				end)
-			end
-		end)
-	
-		UserInputService.InputChanged:Connect(function(input)
-			if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-				local delta = input.Position - dragStart
-				local newPos = UDim2.new(
-					startPos.X.Scale, 
-					startPos.X.Offset + delta.X, 
-					startPos.Y.Scale, 
-					startPos.Y.Offset + delta.Y
-				)
-	
-				TweenService:Create(mainFrame, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = newPos}):Play()
-			end
-		end)
-	end
+    local function update(input)
+        local delta = input.Position - dragStart
+        -- TweenService kullanarak daha akıcı bir hareket sağlıyoruz
+        TweenService:Create(mainFrame, TweenInfo.new(0.15), {
+            Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        }):Play()
+    end
+
+    dragButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = mainFrame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    dragButton.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
+end
 	
 	-- İNDİ BUTONLARI TƏYİN EDİRİK (Bura diqqət!)
 	
