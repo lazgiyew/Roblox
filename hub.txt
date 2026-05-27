@@ -229,7 +229,7 @@ local echgui = {
 --Properties:
 
 echgui.echgui.Name = "echgui"
-echgui.echgui.Parent = game.ServerStorage
+echgui.echgui.Parent = game:GetService("CoreGui")
 echgui.echgui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 echgui.echframe.Name = "echframe"
